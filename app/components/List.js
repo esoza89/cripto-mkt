@@ -1,6 +1,9 @@
 import { ethers } from "ethers"
+import { useEffect, useState } from "react"
+
 
 function List({ toggleCreate, fee, provider, factory }) {
+    const [toastC, setToastC] = useState(null);
 
   async function listHandler(form) {
 
@@ -9,8 +12,9 @@ function List({ toggleCreate, fee, provider, factory }) {
 
     if (name && symbol) {
       const signer = await provider.getSigner()
-      const developer = await factory.developer()
-      const transaction = await factory.connect(signer).create(name, symbol, developer, { value: fee })
+      const transaction = await factory.connect(signer).create(name, symbol, { value: fee })
+      setToastC("Creando meme moneda...");
+      setTimeout(() => setToastC(null), 3000);
       await transaction.wait()
 
       toggleCreate()
@@ -28,10 +32,15 @@ function List({ toggleCreate, fee, provider, factory }) {
       <form action={listHandler}>
         <input type="text" name="name" placeholder="nombre" />
         <input type="text" name="symbol" placeholder="simbolo" />
-        <input type="submit" value="[ list ]" />
+        <input type="submit" value="[ Crear ]" />
       </form>
 
       <button onClick={toggleCreate} className="btn--fancy">[ cancelar ]</button>
+      {toastC && (
+        <div className="toast">
+          {toastC}
+        </div>
+      )}
     </div>
   );
 }

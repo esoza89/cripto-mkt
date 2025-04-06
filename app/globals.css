@@ -84,6 +84,23 @@ input[type="submit"]:hover {
   transform: scale(1.2);
 }
 
+.container {
+  text-align: center; /* Centers inline/inline-block children */
+}
+
+.link {
+  display: block; /* Ensures the link respects text-align */
+  color: #f59e0b; /* Yellowish-orange */
+  text-decoration: underline;
+  transition: color 0.2s ease;
+  text-align: center; /* Centers inline/inline-block children */
+  font-size: 1.5rem;
+}
+
+.link:hover {
+  color: #fbbf24; /* Lighter orange on hover */
+}
+
 /* MAIN LAYOUT */
 
 main {
@@ -232,7 +249,7 @@ main .listings h1 {
 
 /* TRADE TOKENS */
 .trade {
-  width: 100vw;
+  width: 98vw;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.9);
 
@@ -243,7 +260,7 @@ main .listings h1 {
 
   display: flex;
   align-items: center;
-  flex-direction: column;
+  flex-direction: row;
   padding-top: 3em;
 }
 
@@ -276,4 +293,12 @@ main .listings h1 {
   width: 200px;
   padding: 1.50em;
   border-radius: 6px;
+}
+
+.trade__cost p {
+  font-size: 0.95rem;
+  text-transform: lowercase;
+  padding: 0.5em;
+  width: 100%;
+  color: #808080;
 }

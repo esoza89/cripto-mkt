@@ -1,4 +1,4 @@
-# fun.pump
+# cripto-mkt
 
 ## Technology Stack & Tools
 

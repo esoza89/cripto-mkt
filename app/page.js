@@ -88,7 +88,7 @@ export default function Home() {
             {!factory ? (
               "[ conecta la billetera ]"
             ) : !account ? (
-              "[ conecta la cuenta ]"
+              "[ conecta la billetera ]"
             ) : (
               "[ crea una meme moneda ]"
             )}

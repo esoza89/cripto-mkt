@@ -2,15 +2,16 @@
 pragma solidity ^0.8.26;
 
 import {Token} from "./Token.sol";
-import {PositionManager} from "@uniswap/v4-periphery/src/PositionManager.sol";
+import {PositionManager} from "v4-periphery/src/PositionManager.sol";
+//import {PositionManager} from "@uniswap/v4-periphery/src/PositionManager.sol";
 import {PoolKey} from "@uniswap/v4-core/src/types/PoolKey.sol";
 import {CurrencyLibrary, Currency} from "@uniswap/v4-core/src/types/Currency.sol";
 import {Actions} from "@uniswap/v4-periphery/src/libraries/Actions.sol";
 import {LiquidityAmounts} from "@uniswap/v4-core/test/utils/LiquidityAmounts.sol";
 import {TickMath} from "@uniswap/v4-core/src/libraries/TickMath.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+//import {IPoolManager} from "@uniswap/v4-core/interfaces/IPoolManager.sol";
 import {IPoolManager} from "v4-core/src/interfaces/IPoolManager.sol";
-//import {PositionManager} from "v4-periphery/src/PositionManager.sol";
 import {IAllowanceTransfer} from "permit2/src/interfaces/IAllowanceTransfer.sol";
 
 import "hardhat/console.sol";
@@ -127,9 +128,17 @@ contract Factory {
 
     function createLiquidityPool(TokenSale _sale) internal payable {
         
+        IPoolManager constant POOLMANAGER = IPoolManager(address(this));
+        PositionManager constant posm = PositionManager(payable(address(this)));
+        IAllowanceTransfer constant PERMIT2 = IAllowanceTransfer(address(permit2Address));
+        //check if needed
+
+        Currency constant currency0 = Currency.wrap(address(CurrencyLibrary.ADDRESS_ZERO));
+        Currency constant currency1 = Currency.wrap(address(_sale.token));
+
         PoolKey memory pool = PoolKey({
-            currency0: CurrencyLibrary.ADDRESS_ZERO,
-            currency1: _sale.token,
+            currency0: currency0,
+            currency1: currency1,
             fee: 3000,
             tickSpacing: 60,
             hooks: address(0)
@@ -139,7 +148,7 @@ contract Factory {
 
         bytes[] memory params = new bytes[](2);
         params[0] = abi.encodeWithSelector(
-            PositionManager.initializePool.selector,
+            posm.initializePool.selector,
             pool,
             startingPrice
         );
@@ -154,23 +163,28 @@ contract Factory {
         uint160 sqrtPriceAX96 = TickMath.getSqrtRatioAtTick(tickLower);
         uint160 sqrtPriceBX96 = TickMath.getSqrtRatioAtTick(tickUpper);
 
+        uint256 amount1 = 1_000_000_000 ether - 10_000_000 ether - _sale.sold;
+
         uint128 liquidity = LiquidityAmounts.getLiquidityForAmounts(
             startingPrice,
             sqrtPriceAX96,
             sqrtPriceBX96,
             _sale.raised,
-            _sale.sold
+            amount1
         );
 
         bytes memory hookData = "";
 
-        mintParams[0] = abi.encode(pool, tickLower, tickUpper, liquidity, _sale.raised, _sale.sold, address(this), hookData);
+        uint256 amount0Max = _sale.raised + 1 wei;
+        uint256 amount1Max = amount1 + 1 wei;
+
+        mintParams[0] = abi.encode(pool, tickLower, tickUpper, liquidity, amount0Max, amount1Max, address(this), hookData);
 
         mintParams[1] = abi.encode(pool.currency0, pool.currency1);
 
         uint256 deadline = block.timestamp + 60;
         params[1] = abi.encodeWithSelector(
-            PositionManager.modifyLiquidities.selector, abi.encode(actions, mintParams), deadline
+            posm.modifyLiquidities.selector, abi.encode(actions, mintParams), deadline
         );
 
         IERC20(CurrencyLibrary.ADDRESS_ZERO).approve(address(permit2Address), type(uint256).max);
@@ -179,7 +193,7 @@ contract Factory {
         IAllowanceTransfer(address(permit2Address)).approve(CurrencyLibrary.ADDRESS_ZERO, address(positionManager), type(uint160).max, type(uint48).max);
         IAllowanceTransfer(address(permit2Address)).approve(_sale.token, address(positionManager), type(uint160).max, type(uint48).max);
 
-        PositionManager(PositionManager).multicall{value: _sale.raised}(params);
+        PositionManager(posm).multicall{value: _sale.raised}(params);
 
     }
 

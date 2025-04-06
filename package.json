@@ -1,5 +1,5 @@
 {
-  "name": "fun-pump",
+  "name": "cripto-mkt",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -14,7 +14,8 @@
     "@uniswap/v4-periphery": "^1.0.1",
     "next": "15.0.3",
     "react": "18.3.1",
-    "react-dom": "18.3.1"
+    "react-dom": "18.3.1",
+    "react-router-dom": "7.5.0"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
