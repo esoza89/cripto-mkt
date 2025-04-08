@@ -1,11 +1,13 @@
+"use client"
+
 import { useEffect, useState } from "react"
 import { ethers } from "ethers"
 import Token from "../abis/Token.json"
 import config from "../config.json"
+import Factory from "../abis/Factory.json"
+import images from "../images.json"
 
-
-
-export function Trade({ toggleTrade, token, provider, factory }) {
+export function Trade() {
   const [target, setTarget] = useState(0)
   const [limit, setLimit] = useState(0)
   const [price, setPrice] = useState(0)
@@ -15,6 +17,12 @@ export function Trade({ toggleTrade, token, provider, factory }) {
   const [totalCostS, setTotalCostS] = useState(0)
   const [toastB, setToastB] = useState(null);
   const [toastS, setToastS] = useState(null);
+  let [tokenFid, setTokenFid] = useState(0);
+  let [token, setToken] = useState(null);
+  const [provider, setProvider] = useState(null)
+  const [account, setAccount] = useState(null)
+  const [factory, setFactory] = useState(null)
+  const [isLoading, setIsLoading] = useState(true);
 
 
   const stimateCostB = async (event) => {
@@ -70,7 +78,6 @@ export function Trade({ toggleTrade, token, provider, factory }) {
 
     await transaction.wait()
 
-    toggleTrade()
   }
 
   async function sellHandler(form) {
@@ -120,25 +127,74 @@ export function Trade({ toggleTrade, token, provider, factory }) {
 
     await transaction.wait()
 
-    toggleTrade()
   }
 
   async function getSaleDetails() {
-    const targetD = await factory.getTarget()
-    //const targetD = 0
-    setTarget(targetD)
+    try {
+        const storedData = localStorage.getItem('tradeData');
+        const parsedData = JSON.parse(storedData);
+        const gotToken = parsedData.tokenFid;
+        tokenFid = gotToken
+        setTokenFid(gotToken)
+        const provider = new ethers.BrowserProvider(window.ethereum)
+        setProvider(provider)
+        console.log("check one")
+        const network = await provider.getNetwork()
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
+        const account = ethers.getAddress(accounts[0])
+        const signer = await provider.getSigner()
+        setAccount(account)
+        const factoryAddress = config[network.chainId].factory.address
+        const factory = new ethers.Contract(factoryAddress, Factory, provider)
+        setFactory(factory)
+        const targetD = await factory.getTarget()
+        //const targetD = 0
+        setTarget(targetD)
+        console.log(`check two ${targetD}`)
 
-    const limitD = await factory.getTokenLimit()
-    setLimit(limitD)
+        const limitD = await factory.getTokenLimit()
+        setLimit(limitD)
+        console.log(`check three ${limitD}`)
 
-    const priceD = await factory.getPrice(token.sold)
-    setPrice(priceD)
+        //const tokenSale = await factory.getTokenSale(tokenFid)
+        let tokenSale = await factory.getTokenSale(tokenFid)
+        console.log(`check five ${tokenSale.name}`)
+
+        token = {
+            token: tokenSale.token,
+            name: tokenSale.name,
+            creator: tokenSale.creator,
+            sold: tokenSale.sold,
+            raised: tokenSale.raised,
+            isOpen: tokenSale.isOpen,
+            image: images[tokenFid],
+            fId: tokenFid
+        }
+        setToken(token)
+        const priceD = await factory.getPrice(token.sold)
+        setPrice(priceD)
+
+    } catch (error) {
+    console.error("Error fetching sale details:", error);
+    } finally {
+    setIsLoading(false);
+    }
 
   }
 
   useEffect(() => {
-    getSaleDetails()
-  }, [])
+    if (typeof window !== 'undefined') {
+      getSaleDetails();
+    }
+  }, []);
+
+  if (isLoading) {
+    return <div>Loading token details...</div>;
+  }
+  
+  if (!token) {
+    return <div>Token not found</div>;
+  }
 
   return (
     <div className="trade">
@@ -200,7 +256,6 @@ export function Trade({ toggleTrade, token, provider, factory }) {
           </div>
         </div>
       )}
-      <button onClick={toggleTrade} className="btn--fancy">[ cancelar ]</button>
     </div >
   );
 }

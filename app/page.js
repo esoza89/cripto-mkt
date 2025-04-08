@@ -63,7 +63,8 @@ export default function Home() {
           sold: tokenSale.sold,
           raised: tokenSale.raised,
           isOpen: tokenSale.isOpen,
-          image: images[i]
+          image: images[i],
+          fId: i
         }
       
         tokens.push(token)
