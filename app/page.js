@@ -22,6 +22,7 @@ export default function Home() {
   const [fee, setFee] = useState(0)
   const [showCreate, setShowCreate] = useState(false)
   const [tokens, setTokens] = useState([])
+  const [tokensTop, setTokensTop] = useState([])
   const [token, setToken] = useState(null)
   const [showTrade, setShowTrade] = useState(false)
 
@@ -48,12 +49,12 @@ export default function Home() {
       setFee(fee)
 
       const totalTokens = await factory.totalTokens()
+      const totalTokensNumber = Number(totalTokens)
       console.log(`total tokens ${totalTokens}`)
       const tokens = []
+      const startIndex = Math.min(totalTokensNumber - 1, 49)
       
-      for (let i = 0; i < totalTokens; i++) {
-        if (i == 50) break
-
+      for (let i = startIndex; i >= 0 && i >= totalTokensNumber - 50; i--) {
         const tokenSale = await factory.getTokenSale(i)
 
         const token = {
@@ -70,7 +71,20 @@ export default function Home() {
         tokens.push(token)
       }
 
-      setTokens(tokens.reverse())
+      setTokens(tokens)
+
+      const sortedTokens = [...tokens].sort((a, b) => {
+        if (a.isOpen && !b.isOpen) return -1;
+        if (!a.isOpen && b.isOpen) return 1;
+        
+        if (b.sold > a.sold) return 1;
+        if (b.sold < a.sold) return -1;
+        
+        return 0;
+      });
+    
+      const top5Tokens = sortedTokens.slice(0, 5);
+      setTokensTop(top5Tokens);
 
     }
   }
@@ -97,6 +111,26 @@ export default function Home() {
         </div>
 
         <div className="listings">
+          <h1>monedas en tendencia</h1>
+            <div className="tokens">
+              {!account ? (
+                <p>conecta la cuenta</p>
+              ) : tokensTop.length === 0 ? (
+                <p>no hay meme monedas</p>
+              ) : (
+                tokensTop.map((token, index) => (
+                  <Token
+                    toggleTrade={toggleTrade}
+                    token={token}
+                    key={index}
+                  />
+                ))
+              )}
+            </div>
+          </div>
+
+
+        <div className="listings">
           <h1>nuevas monedas</h1>
             <div className="tokens">
               {!account ? (
@@ -113,7 +147,6 @@ export default function Home() {
                 ))
               )}
             </div>
-        
         </div>
 
       </main>
