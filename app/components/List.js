@@ -26,7 +26,7 @@ function List({ toggleCreate, fee, provider, factory }) {
       <h2>Crear una meme moneda</h2>
 
       <div className="list_description">
-        <p>fee: {ethers.formatUnits(fee, 18)} ETH</p>
+        <p>Comision: {ethers.formatUnits(fee, 18)} ETH</p>
       </div>
 
       <form action={listHandler}>

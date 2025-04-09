@@ -7,7 +7,6 @@ import { ethers } from 'ethers'
 import Header from "./components/Header"
 import List from "./components/List"
 import Token from "./components/Token"
-import Trade from "./components/Trade"
 
 // ABIs & Config
 import Factory from "./abis/Factory.json"
@@ -34,6 +33,10 @@ export default function Home() {
     setToken(token)
     showTrade ? setShowTrade(false) : setShowTrade(true)
   }
+
+  const openInNewTab = () => {
+    window.open('/ListaMaestra', '_blank', 'noopener,noreferrer');
+  };
 
   async function loadBlockchainData() {
     if (typeof window.ethereum !== 'undefined') {
@@ -149,15 +152,18 @@ export default function Home() {
             </div>
         </div>
 
+        <div className="create">
+          <button onClick={openInNewTab} className="btn--fancy">
+            [ todas las monedas ]
+          </button>
+        </div>
+
       </main>
 
       { showCreate && (
         <List toggleCreate={toggleCreate} fee={fee} provider={provider} factory={factory} />
       )}
 
-      { showTrade && (
-        <Trade toggleTrade={toggleTrade} token={token} provider={provider} factory={factory} />
-      )}
 
     </div>
   );

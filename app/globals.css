@@ -115,7 +115,7 @@ main {
 main .create {
   grid-column: 1 / 13;
   place-content: center;
-  min-height: 30svh;
+  min-height: 20svh;
 }
 
 /* DISPLAY TOKEN LISTINGS */
@@ -132,7 +132,7 @@ main .listings h1 {
 
 .tokens {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(400px, 0));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 0));
   gap: 1em;
   place-content: center;
   text-align: center;
@@ -266,12 +266,12 @@ main .listings h1 {
 
 .trade p {
   font-family: "Arial";
-  font-size: 1.10rem;
+  font-size: 1.0rem;
   text-transform: lowercase;
 }
 
 .trade .disclaimer {
-  font-size: 1.50rem;
+  font-size: 1.0rem;
   font-weight: bold;
   padding: 2em;
 }

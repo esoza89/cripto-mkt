@@ -2,7 +2,6 @@
 
 
 import { ethers } from "ethers"
-import Trade from "./Trade"
 
 function Token({ toggleTrade, token }) {
 

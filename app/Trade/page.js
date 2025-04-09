@@ -201,7 +201,7 @@ export function Trade() {
       <h1>trade</h1>
 
       <div className="token__details">
-        <img src={token.image} alt="token image" width={256} height={256} />
+        <img src={token.image} alt="token image" width={156} height={156} />
         <p>creado por {token.creator.slice(0, 6) + '...' + token.creator.slice(38, 42)}</p>
         <p>Market Cap: {Number(ethers.formatUnits(token.raised, 18)).toFixed(18)} ETH</p>
         <p>Precio base: {ethers.formatUnits(price, 18)} ETH</p>
