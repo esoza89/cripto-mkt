@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { ethers } from 'ethers'
+import { useSelector} from 'react-redux';
 
 // Components
 import Header from "./components/Header"
@@ -11,7 +12,6 @@ import Token from "./components/Token"
 // ABIs & Config
 import Factory from "./abis/Factory.json"
 import config from "./config.json"
-import images from "./images.json"
 
 export default function Home() {
 
@@ -25,13 +25,10 @@ export default function Home() {
   const [token, setToken] = useState(null)
   const [showTrade, setShowTrade] = useState(false)
 
+  const tokensState = useSelector((state) => state.tokens.tokens);
+
   async function toggleCreate() {
     showCreate ? setShowCreate(false) : setShowCreate(true)
-  }
-
-  async function toggleTrade(token) {
-    setToken(token)
-    showTrade ? setShowTrade(false) : setShowTrade(true)
   }
 
   const openInNewTab = () => {
@@ -58,6 +55,8 @@ export default function Home() {
       const startIndex = Math.min(totalTokensNumber - 1, 49)
       
       for (let i = startIndex; i >= 0 && i >= totalTokensNumber - 50; i--) {
+        console.log(`token ${i}`)
+        console.log(`tokenStateID ${tokensState[i]?.id}`)
         const tokenSale = await factory.getTokenSale(i)
 
         const token = {
@@ -67,7 +66,7 @@ export default function Home() {
           sold: tokenSale.sold,
           raised: tokenSale.raised,
           isOpen: tokenSale.isOpen,
-          image: images[i],
+          image: tokensState[i]?.imageURL,
           fId: i
         }
       
@@ -123,7 +122,6 @@ export default function Home() {
               ) : (
                 tokensTop.map((token, index) => (
                   <Token
-                    toggleTrade={toggleTrade}
                     token={token}
                     key={index}
                   />
@@ -143,7 +141,6 @@ export default function Home() {
               ) : (
                 tokens.map((token, index) => (
                   <Token
-                    toggleTrade={toggleTrade}
                     token={token}
                     key={index}
                   />

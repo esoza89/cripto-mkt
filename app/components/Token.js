@@ -3,7 +3,7 @@
 
 import { ethers } from "ethers"
 
-function Token({ toggleTrade, token }) {
+function Token({ token }) {
 
   const openInNewTab = () => {
     const tokenFid = token.fId

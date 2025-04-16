@@ -1,18 +1,23 @@
+'use client';
 import { Nabla } from "next/font/google";
 import "./globals.css";
+import { Provider } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
+import { store, persistor } from './store/store';
+//import LoadHistoricalTokens from './components/LoadHistoricalTokens';
 
 const nabla = Nabla({ subsets: ['latin'] })
 
-export const metadata = {
-  title: "criptomkt",
-  description: "crear meme monedas",
-};
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${nabla.className}`}>
-        {children}
+        <Provider store={store}>
+          <PersistGate loading={null} persistor={persistor}>
+            {children}
+          </PersistGate>
+        </Provider>
       </body>
     </html>
   );

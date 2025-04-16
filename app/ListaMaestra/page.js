@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { ethers } from 'ethers'
+import { useSelector} from 'react-redux';
 
 // Components
 import Header from "../components/Header"
@@ -10,18 +11,15 @@ import Token from "../components/Token"
 // ABIs & Config
 import Factory from "../abis/Factory.json"
 import config from "../config.json"
-import images from "../images.json"
 
 export function ListaMaestra() {
 
   const [provider, setProvider] = useState(null)
   const [account, setAccount] = useState(null)
   const [factory, setFactory] = useState(null)
-  const [fee, setFee] = useState(0)
-  const [showCreate, setShowCreate] = useState(false)
   const [tokens, setTokens] = useState([])
-  const [token, setToken] = useState(null)
 
+  const tokensState = useSelector((state) => state.tokens.tokens);
 
   async function loadBlockchainData() {
     if (typeof window.ethereum !== 'undefined') {
@@ -52,7 +50,7 @@ export function ListaMaestra() {
           sold: tokenSale.sold,
           raised: tokenSale.raised,
           isOpen: tokenSale.isOpen,
-          image: images[i],
+          image: tokensState[i]?.imageURL,
           fId: i
         }
       

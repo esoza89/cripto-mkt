@@ -5,7 +5,8 @@ import { ethers } from "ethers"
 import Token from "../abis/Token.json"
 import config from "../config.json"
 import Factory from "../abis/Factory.json"
-import images from "../images.json"
+import { useSelector, useDispatch} from 'react-redux';
+
 
 export function Trade() {
   const [target, setTarget] = useState(0)
@@ -23,6 +24,9 @@ export function Trade() {
   const [account, setAccount] = useState(null)
   const [factory, setFactory] = useState(null)
   const [isLoading, setIsLoading] = useState(true);
+
+  const dispatch = useDispatch();
+  const tokensState = useSelector((state) => state.tokens.tokens);
 
 
   const stimateCostB = async (event) => {
@@ -167,7 +171,7 @@ export function Trade() {
             sold: tokenSale.sold,
             raised: tokenSale.raised,
             isOpen: tokenSale.isOpen,
-            image: images[tokenFid],
+            image: tokensState[tokenFid]?.imageURL,
             fId: tokenFid
         }
         setToken(token)

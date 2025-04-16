@@ -223,7 +223,7 @@ main .listings h1 {
 .list__description {
   font-family: "Arial";
   font-size: 1.10rem;
-  font-weight: 400;
+  font-weight: 300;
   text-transform: lowercase;
   padding: 1em 0 0;
 }
@@ -233,7 +233,7 @@ main .listings h1 {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  gap: 2em;
+  gap: 1em;
   padding: 2em;
 }
 
@@ -242,7 +242,7 @@ main .listings h1 {
   color: var(--foreground);
   border: none;
 
-  width: 200px;
+  width: 400px;
   padding: 1.50em;
   border-radius: 6px;
 }
