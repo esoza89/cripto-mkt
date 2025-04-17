@@ -168,11 +168,14 @@ export function Trade() {
             token: tokenSale.token,
             name: tokenSale.name,
             creator: tokenSale.creator,
+            crtMsg: tokensState[tokenFid]?.creatorMessage,
             sold: tokenSale.sold,
             raised: tokenSale.raised,
             isOpen: tokenSale.isOpen,
             image: tokensState[tokenFid]?.imageURL,
-            fId: tokenFid
+            fId: tokenFid,
+            rSocial1: tokensState[tokenFid]?.socialMediaLinks?.rSocial1 || null,
+            rSocial2: tokensState[tokenFid]?.socialMediaLinks?.rSocial2 || null,
         }
         setToken(token)
         const priceD = await factory.getPrice(token.sold)
@@ -207,8 +210,27 @@ export function Trade() {
       <div className="token__details">
         <img src={token.image} alt="token image" width={156} height={156} />
         <p>creado por {token.creator.slice(0, 6) + '...' + token.creator.slice(38, 42)}</p>
+        <p>{token.crtMsg}</p>
         <p>Market Cap: {Number(ethers.formatUnits(token.raised, 18)).toFixed(18)} ETH</p>
         <p>Precio base: {ethers.formatUnits(price, 18)} ETH</p>
+        <p>
+          <a 
+            href={`${token.rSocial1}`} 
+            target="_blank" 
+            rel="noopener noreferrer"
+          >   
+            {token.rSocial1}
+          </a>          
+        </p>
+        <p>
+          <a 
+            href={`${token.rSocial2}`} 
+            target="_blank" 
+            rel="noopener noreferrer"
+          >   
+            {token.rSocial2}
+          </a>          
+        </p>
         <p className="name">{token.name}</p>
       </div>
 
