@@ -6,15 +6,48 @@ import { addToken } from '../store/tokensSlice';
 
 
 function List({ toggleCreate, fee, provider, factory }) {
-  const dispatch = useDispatch();
+  const [file, setFile] = useState();
+  const [url, setUrl] = useState("");
+  const [uploading, setUploading] = useState(false);
 
+  const dispatch = useDispatch();
   const [toastC, setToastC] = useState(null);
+
+  const uploadFile = async () => {
+    try {
+      if (!file) {
+        alert("Elige una imagen primero");
+        return;
+      }
+
+      setUploading(true);
+      const data = new FormData();
+      data.set("file", file);
+      const uploadRequest = await fetch("/api/files", {
+        method: "POST",
+        body: data,
+      });
+      const signedUrl = await uploadRequest.json();
+      console.log(signedUrl);
+      setUrl(signedUrl);
+      setUploading(false);
+    } catch (e) {
+      console.log(e);
+      setUploading(false);
+      alert("Problema al cargar la imagen, intenta de nuevo");
+    }
+  };
+
+  const handleChange = (e) => {
+    setFile(e.target?.files?.[0]);
+  };
 
   async function listHandler(form) {
 
     const name = form.get("name")
     const symbol = form.get("symbol")
-    const image = form.get("imageURL")
+    const image = url
+    console.log("image", image)
     const creatorMessage = form.get("creatorMessage")
     const rSocial1 = form.get("rSocial1")
     const rSocial2 = form.get("rSocial2")
@@ -55,7 +88,15 @@ function List({ toggleCreate, fee, provider, factory }) {
       <form action={listHandler}>
         <input type="text" name="name" placeholder="nombre" />
         <input type="text" name="symbol" placeholder="simbolo" />
-        <input type="text" name="imageURL" placeholder="imagen URL" />
+        <input type="file" onChange={handleChange} />
+        <button type="button" disabled={uploading} onClick={uploadFile}>
+          {uploading 
+            ? "Cargando..." 
+            : url 
+            ? "Imagen cargada ✅" 
+            : "Cargar imagen"
+        }
+        </button>
         <input type="text" name="creatorMessage" placeholder="mensaje del creador" />
         <input type="text" name="rSocial1" placeholder="red social (opcional)" />
         <input type="text" name="rSocial2" placeholder="red social 2 (opcional)" />

@@ -1,0 +1,9 @@
+{
+    "compilerOptions": {
+      "jsx": "preserve",  // For Next.js
+      "allowJs": true,
+      "esModuleInterop": true
+    },
+    "include": ["**/*.ts", "**/*.tsx"],
+    "exclude": ["node_modules"]
+  }

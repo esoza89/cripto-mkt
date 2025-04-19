@@ -33,14 +33,9 @@ const tokensSlice = createSlice({
       const token = state.tokens.find((t) => t.id === tokenId);
       if (token) token.socialMediaLinks = { ...token.socialMediaLinks, ...links };
     },
-    // //ERASE
-    // initializeTokens: (state, action) => {
-    //     state.tokens = [...action.payload, ...state.tokens]; // Prepend old tokens
-    // },
   },
 });
 
-//export const { addToken, addComment, updateSocialLinks, initializeTokens } = tokensSlice.actions;
 export const { addToken, addComment, updateSocialLinks } = tokensSlice.actions;
 
 export default tokensSlice.reducer;
