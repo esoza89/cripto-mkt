@@ -5,6 +5,7 @@ import { ethers } from "ethers"
 import Token from "../abis/Token.json"
 import config from "../config.json"
 import Factory from "../abis/Factory.json"
+import ProgressBar from "../components/ProgressBar"
 import { useSelector, useDispatch} from 'react-redux';
 
 
@@ -30,22 +31,16 @@ export function Trade() {
 
 
   const stimateCostB = async (event) => {
-    console.log(token.sold)
-    console.log(event.target.value)
     setAmountBValue(event.target.value)
     const amountB = ethers.parseUnits(event.target.value, 18)
     const cost = await factory.getCost(token.sold, amountB)
-    console.log(cost)
     setTotalCostB(cost)
   }
 
   const stimateCostS = async (event) => {
-    console.log(token.sold)
-    console.log(event.target.value)
     setAmountSValue(event.target.value)
     const amountS = ethers.parseUnits(event.target.value, 18)
     const cost = await factory.getCost(token.sold, amountS)
-    console.log(cost)
     setTotalCostS(cost)
   }
 
@@ -55,19 +50,18 @@ export function Trade() {
 
     if(token.sold + amountB > limit) {
       setToastB("No hay suficientes tokens en existencia");
-      setTimeout(() => setToastB(null), 3000);
+      setTimeout(() => setToastB(null), 6000);
       return;
     }
     const signer = await provider.getSigner()
     const userBalance = await provider.getBalance(signer)
-    console.log(userBalance)
 
     const sold = token.sold
     const totalCost = await factory.getCost(sold, amountB)
 
     if(userBalance < totalCost) {
       setToastB("No cuentas con ETH suficiente");
-      setTimeout(() => setToastB(null), 3000);
+      setTimeout(() => setToastB(null), 6000);
       return;
     }
 
@@ -78,7 +72,7 @@ export function Trade() {
     )
 
     setToastB("Procesando compra...");
-    setTimeout(() => setToastB(null), 3000);
+    setTimeout(() => setToastB(null), 6000);
 
     await transaction.wait()
 
@@ -89,7 +83,7 @@ export function Trade() {
 
     if(token.sold - amountS < 0 ) {
       setToastS("No hay suficientes tokens vendidos");
-      setTimeout(() => setToastS(null), 3000);
+      setTimeout(() => setToastS(null), 6000);
       return;
     }
     const signer = await provider.getSigner()
@@ -98,12 +92,11 @@ export function Trade() {
     const userBalance = await factory.balances(token.token, signer)
     if(userBalance < amountS) {
       setToastS("No tienes suficientes tokens para vender");
-      setTimeout(() => setToastS(null), 3000);
+      setTimeout(() => setToastS(null), 6000);
       return;
     }
 
     const sold = token.sold
-    console.log(sold)
 
     const factoryAddress = config[network.chainId].factory.address
 
@@ -127,7 +120,7 @@ export function Trade() {
     )
 
     setToastS("Procesando venta...");
-    setTimeout(() => setToastS(null), 3000);
+    setTimeout(() => setToastS(null), 6000);
 
     await transaction.wait()
 
@@ -142,7 +135,6 @@ export function Trade() {
         setTokenFid(gotToken)
         const provider = new ethers.BrowserProvider(window.ethereum)
         setProvider(provider)
-        console.log("check one")
         const network = await provider.getNetwork()
         const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
         const account = ethers.getAddress(accounts[0])
@@ -154,15 +146,12 @@ export function Trade() {
         const targetD = await factory.getTarget()
         //const targetD = 0
         setTarget(targetD)
-        console.log(`check two ${targetD}`)
 
         const limitD = await factory.getTokenLimit()
         setLimit(limitD)
-        console.log(`check three ${limitD}`)
 
         //const tokenSale = await factory.getTokenSale(tokenFid)
         let tokenSale = await factory.getTokenSale(tokenFid)
-        console.log(`check five ${tokenSale.name}`)
 
         token = {
             token: tokenSale.token,
@@ -279,6 +268,9 @@ export function Trade() {
                 {toastS}
               </div>
             )}
+          </div>
+          <div>
+            <ProgressBar currentSales={token.sold} currentTarget={limit} />
           </div>
         </div>
       )}
