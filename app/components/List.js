@@ -28,7 +28,6 @@ function List({ toggleCreate, fee, provider, factory }) {
         body: data,
       });
       const signedUrl = await uploadRequest.json();
-      console.log(signedUrl);
       setUrl(signedUrl);
       setUploading(false);
     } catch (e) {
@@ -47,7 +46,6 @@ function List({ toggleCreate, fee, provider, factory }) {
     const name = form.get("name")
     const symbol = form.get("symbol")
     const image = url
-    console.log("image", image)
     const creatorMessage = form.get("creatorMessage")
     const rSocial1 = form.get("rSocial1")
     const rSocial2 = form.get("rSocial2")
