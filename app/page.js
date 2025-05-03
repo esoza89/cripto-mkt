@@ -118,7 +118,7 @@ export default function Home() {
               {!account ? (
                 <p>conecta la cuenta</p>
               ) : tokensTop.length === 0 ? (
-                <p>no hay meme monedas</p>
+                <p>cargando...</p>
               ) : (
                 tokensTop.map((token, index) => (
                   <Token
@@ -137,7 +137,7 @@ export default function Home() {
               {!account ? (
                 <p>conecta la cuenta</p>
               ) : tokens.length === 0 ? (
-                <p>no hay meme monedas</p>
+                <p>cargando...</p>
               ) : (
                 tokens.map((token, index) => (
                   <Token

@@ -24,7 +24,7 @@ ChartJS.register(
 const ProgressBar = ({ currentSales, currentTarget }) => {
     const sold = Number(currentSales)
     const target = Number(currentTarget)
-    const percentage = ((sold / target) * 100).toFixed(2);
+    const percentage = ((sold / target) * 100).toFixed(8);
 
     const data = {
         labels: ['Progreso de ventas'],

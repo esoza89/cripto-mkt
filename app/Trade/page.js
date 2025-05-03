@@ -6,7 +6,9 @@ import Token from "../abis/Token.json"
 import config from "../config.json"
 import Factory from "../abis/Factory.json"
 import ProgressBar from "../components/ProgressBar"
+import PriceHistoryChart from '../components/PriceHistoryChart';
 import { useSelector, useDispatch} from 'react-redux';
+import { addTrade } from "../store/tokensSlice"
 
 
 export function Trade() {
@@ -15,8 +17,8 @@ export function Trade() {
   const [price, setPrice] = useState(0)
   const [amountBValue, setAmountBValue] = useState(1)
   const [amountSValue, setAmountSValue] = useState(1)
-  const [totalCostB, setTotalCostB] = useState(0)
-  const [totalCostS, setTotalCostS] = useState(0)
+  const [totalCostB, setTotalCostB] = useState(12500000155)
+  const [totalCostS, setTotalCostS] = useState(12500000155)
   const [toastB, setToastB] = useState(null);
   const [toastS, setToastS] = useState(null);
   let [tokenFid, setTokenFid] = useState(0);
@@ -25,6 +27,7 @@ export function Trade() {
   const [account, setAccount] = useState(null)
   const [factory, setFactory] = useState(null)
   const [isLoading, setIsLoading] = useState(true);
+  const [priceHistory, setPriceHistory] = useState([]);
 
   const dispatch = useDispatch();
   const tokensState = useSelector((state) => state.tokens.tokens);
@@ -76,6 +79,14 @@ export function Trade() {
 
     await transaction.wait()
 
+    const finalPrice = await factory.getPrice(sold + amountB)
+    const finalPriceFormatted = Number(ethers.formatUnits(finalPrice, 18))
+    dispatch(
+      addTrade({
+        tokenId: tokenFid,
+        trade: finalPriceFormatted
+      })
+    )    
   }
 
   async function sellHandler(form) {
@@ -124,6 +135,15 @@ export function Trade() {
 
     await transaction.wait()
 
+    const finalPrice = await factory.getPrice(sold - amountS)
+    const finalPriceFormatted = Number(ethers.formatUnits(finalPrice, 18))
+    dispatch(
+      addTrade({
+        tokenId: tokenFid,
+        trade: finalPriceFormatted
+      })
+    )
+
   }
 
   async function getSaleDetails() {
@@ -144,13 +164,11 @@ export function Trade() {
         const factory = new ethers.Contract(factoryAddress, Factory, provider)
         setFactory(factory)
         const targetD = await factory.getTarget()
-        //const targetD = 0
         setTarget(targetD)
 
         const limitD = await factory.getTokenLimit()
         setLimit(limitD)
 
-        //const tokenSale = await factory.getTokenSale(tokenFid)
         let tokenSale = await factory.getTokenSale(tokenFid)
 
         token = {
@@ -170,6 +188,10 @@ export function Trade() {
         const priceD = await factory.getPrice(token.sold)
         setPrice(priceD)
 
+        const trades = tokensState[tokenFid]?.trades || []
+        const priceHistoryD = trades.slice(-75).reverse() || []
+        setPriceHistory(priceHistoryD)
+
     } catch (error) {
     console.error("Error fetching sale details:", error);
     } finally {
@@ -185,7 +207,7 @@ export function Trade() {
   }, []);
 
   if (isLoading) {
-    return <div>Loading token details...</div>;
+    return <div>Cargando moneda...</div>;
   }
   
   if (!token) {
@@ -274,6 +296,7 @@ export function Trade() {
           </div>
         </div>
       )}
+      <PriceHistoryChart prices={priceHistory} />
     </div >
   );
 }

@@ -68,6 +68,7 @@ function List({ toggleCreate, fee, provider, factory }) {
             rSocial2: rSocial2,
           },
           comments: [],
+          trades: [],
         })
       );
 

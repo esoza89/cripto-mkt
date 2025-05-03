@@ -18,6 +18,7 @@ const tokensSlice = createSlice({
         creatorMessage: action.payload.creatorMessage,
         socialMediaLinks: action.payload.socialMediaLinks || {}, // Default empty
         comments: [], // Initialize empty comments
+        trades: [], // Initialize empty trades
         createdAt: Date.now(),
       });
     },
@@ -26,6 +27,11 @@ const tokensSlice = createSlice({
       const { tokenId, comment } = action.payload;
       const token = state.tokens.find((t) => t.id === tokenId);
       if (token) token.comments.push(comment);
+    },
+    addTrade: (state, action) => {
+      const { tokenId, trade } = action.payload;
+      const token = state.tokens.find((t) => t.id === tokenId);
+      if (token) token.trades.push(trade);
     },
     // Update social links
     updateSocialLinks: (state, action) => {
@@ -36,6 +42,6 @@ const tokensSlice = createSlice({
   },
 });
 
-export const { addToken, addComment, updateSocialLinks } = tokensSlice.actions;
+export const { addToken, addComment, addTrade, updateSocialLinks } = tokensSlice.actions;
 
 export default tokensSlice.reducer;
