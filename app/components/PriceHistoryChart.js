@@ -52,7 +52,7 @@ const PriceHistoryChart = ({ prices }) => {
         },
         title: {
             display: true,
-            text: 'Grafico de trades anteriores',
+            text: 'Grafico de trades',
             color: 'orange',
             font: {
             size: 16,
