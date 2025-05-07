@@ -17,8 +17,8 @@ export function Trade() {
   const [price, setPrice] = useState(0)
   const [amountBValue, setAmountBValue] = useState(1)
   const [amountSValue, setAmountSValue] = useState(1)
-  const [totalCostB, setTotalCostB] = useState(12500000155)
-  const [totalCostS, setTotalCostS] = useState(12500000155)
+  const [totalCostB, setTotalCostB] = useState(0)
+  const [totalCostS, setTotalCostS] = useState(0)
   const [toastB, setToastB] = useState(null);
   const [toastS, setToastS] = useState(null);
   let [tokenFid, setTokenFid] = useState(0);
@@ -30,8 +30,7 @@ export function Trade() {
   const [priceHistory, setPriceHistory] = useState([]);
 
   const dispatch = useDispatch();
-  const tokensState = useSelector((state) => state.tokens.tokens);
-
+  let tokensState = useSelector((state) => state.tokens.tokens);  
 
   const stimateCostB = async (event) => {
     setAmountBValue(event.target.value)
@@ -86,7 +85,8 @@ export function Trade() {
         tokenId: tokenFid,
         trade: finalPriceFormatted
       })
-    )    
+    )
+    window.location.reload();
   }
 
   async function sellHandler(form) {
@@ -143,54 +143,54 @@ export function Trade() {
         trade: finalPriceFormatted
       })
     )
-
+    window.location.reload();
   }
 
   async function getSaleDetails() {
     try {
-        const storedData = localStorage.getItem('tradeData');
-        const parsedData = JSON.parse(storedData);
-        const gotToken = parsedData.tokenFid;
-        tokenFid = gotToken
-        setTokenFid(gotToken)
-        const provider = new ethers.BrowserProvider(window.ethereum)
-        setProvider(provider)
-        const network = await provider.getNetwork()
-        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
-        const account = ethers.getAddress(accounts[0])
-        const signer = await provider.getSigner()
-        setAccount(account)
-        const factoryAddress = config[network.chainId].factory.address
-        const factory = new ethers.Contract(factoryAddress, Factory, provider)
-        setFactory(factory)
-        const targetD = await factory.getTarget()
-        setTarget(targetD)
+      const storedData = localStorage.getItem('tradeData');
+      const parsedData = JSON.parse(storedData);
+      const gotToken = parsedData.tokenFid;
+      tokenFid = gotToken
+      setTokenFid(gotToken)
+      const provider = new ethers.BrowserProvider(window.ethereum)
+      setProvider(provider)
+      const network = await provider.getNetwork()
+      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
+      const account = ethers.getAddress(accounts[0])
+      const signer = await provider.getSigner()
+      setAccount(account)
+      const factoryAddress = config[network.chainId].factory.address
+      const factory = new ethers.Contract(factoryAddress, Factory, provider)
+      setFactory(factory)
+      const targetD = await factory.getTarget()
+      setTarget(targetD)
 
-        const limitD = await factory.getTokenLimit()
-        setLimit(limitD)
+      const limitD = await factory.getTokenLimit()
+      setLimit(limitD)
 
-        let tokenSale = await factory.getTokenSale(tokenFid)
+      let tokenSale = await factory.getTokenSale(tokenFid)
 
-        token = {
-            token: tokenSale.token,
-            name: tokenSale.name,
-            creator: tokenSale.creator,
-            crtMsg: tokensState[tokenFid]?.creatorMessage,
-            sold: tokenSale.sold,
-            raised: tokenSale.raised,
-            isOpen: tokenSale.isOpen,
-            image: tokensState[tokenFid]?.imageURL,
-            fId: tokenFid,
-            rSocial1: tokensState[tokenFid]?.socialMediaLinks?.rSocial1 || null,
-            rSocial2: tokensState[tokenFid]?.socialMediaLinks?.rSocial2 || null,
-        }
-        setToken(token)
-        const priceD = await factory.getPrice(token.sold)
-        setPrice(priceD)
+      token = {
+          token: tokenSale.token,
+          name: tokenSale.name,
+          creator: tokenSale.creator,
+          crtMsg: tokensState[tokenFid]?.creatorMessage,
+          sold: tokenSale.sold,
+          raised: tokenSale.raised,
+          isOpen: tokenSale.isOpen,
+          image: tokensState[tokenFid]?.imageURL,
+          fId: tokenFid,
+          rSocial1: tokensState[tokenFid]?.socialMediaLinks?.rSocial1 || null,
+          rSocial2: tokensState[tokenFid]?.socialMediaLinks?.rSocial2 || null,
+      }
+      setToken(token)
+      const priceD = await factory.getPrice(token.sold)
+      setPrice(priceD)
 
-        const trades = tokensState[tokenFid]?.trades || []
-        const priceHistoryD = trades.slice(-75).reverse() || []
-        setPriceHistory(priceHistoryD)
+      const trades = tokensState[tokenFid]?.trades || []
+      const priceHistoryD = trades.slice(-75) || []
+      setPriceHistory(priceHistoryD)
 
     } catch (error) {
     console.error("Error fetching sale details:", error);
@@ -211,7 +211,7 @@ export function Trade() {
   }
   
   if (!token) {
-    return <div>Token not found</div>;
+    return <div>Token no encontrado</div>;
   }
 
   return (

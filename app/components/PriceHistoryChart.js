@@ -3,6 +3,7 @@
 
 import React from 'react';
 import { Line } from 'react-chartjs-2';
+import { useRef, useEffect } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -26,6 +27,7 @@ ChartJS.register(
 );
 
 const PriceHistoryChart = ({ prices }) => {
+  const chartRef = useRef(null);
   const labels = prices.map((_, index) => `T-${prices.length - index}`);
   const data = {
     labels,
@@ -50,7 +52,7 @@ const PriceHistoryChart = ({ prices }) => {
         },
         title: {
             display: true,
-            text: 'Grafico de trades',
+            text: 'Grafico de trades anteriores',
             color: 'orange',
             font: {
             size: 16,
@@ -93,7 +95,17 @@ const PriceHistoryChart = ({ prices }) => {
     },
   };
 
-  return <Line data={data} options={options} height={400} width={400} />;
+  useEffect(() => {
+    chartRef.current.update();
+  }, [prices]);
+  
+
+  return <Line ref={chartRef}
+            data={data}
+            options={options}
+            height={400}
+            width={400}
+          />;
 };
 
 export default PriceHistoryChart;

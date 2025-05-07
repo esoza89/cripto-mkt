@@ -22,10 +22,14 @@ export default function Home() {
   const [showCreate, setShowCreate] = useState(false)
   const [tokens, setTokens] = useState([])
   const [tokensTop, setTokensTop] = useState([])
-  const [token, setToken] = useState(null)
-  const [showTrade, setShowTrade] = useState(false)
+  const [isToggled, setIsToggled] = useState(true);  
 
   const tokensState = useSelector((state) => state.tokens.tokens);
+
+  
+  const handleToggle = () => {
+    setIsToggled((prev) => !prev);
+  };
 
   async function toggleCreate() {
     showCreate ? setShowCreate(false) : setShowCreate(true)
@@ -55,8 +59,6 @@ export default function Home() {
       const startIndex = Math.min(totalTokensNumber - 1, 49)
       
       for (let i = startIndex; i >= 0 && i >= totalTokensNumber - 50; i--) {
-        console.log(`token ${i}`)
-        console.log(`tokenStateID ${tokensState[i]?.id}`)
         const tokenSale = await factory.getTokenSale(i)
 
         const token = {
@@ -92,8 +94,14 @@ export default function Home() {
   }
 
   useEffect(() => {
-    loadBlockchainData()
-  }, [])
+    if (isToggled === true) {
+      const interval = setInterval(() => {
+        loadBlockchainData()
+      }, 5000);
+      return () => clearInterval(interval);
+    }
+  }, [isToggled])
+
 
   return (
     <div className="page">
@@ -109,6 +117,15 @@ export default function Home() {
             ) : (
               "[ crea una meme moneda ]"
             )}
+          </button>
+        </div>
+        <div>
+          <p>Actualizacion de memes</p>
+          <button
+            onClick={handleToggle}
+            className={`toggle-button ${isToggled ? 'on' : 'off'}`}
+          >
+            {isToggled ? 'Enc' : 'Apag'}
           </button>
         </div>
 

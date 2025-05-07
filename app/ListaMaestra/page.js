@@ -18,8 +18,13 @@ export function ListaMaestra() {
   const [account, setAccount] = useState(null)
   const [factory, setFactory] = useState(null)
   const [tokens, setTokens] = useState([])
+  const [isToggled, setIsToggled] = useState(true);  
 
   const tokensState = useSelector((state) => state.tokens.tokens);
+
+  const handleToggle = () => {
+    setIsToggled((prev) => !prev);
+  };
 
   async function loadBlockchainData() {
     if (typeof window.ethereum !== 'undefined') {
@@ -63,14 +68,28 @@ export function ListaMaestra() {
   }
 
   useEffect(() => {
-    loadBlockchainData()
-  }, [])
+    if (isToggled === true) {
+      const interval = setInterval(() => {
+        loadBlockchainData()
+      }, 5000);
+      return () => clearInterval(interval);
+    }
+  }, [isToggled])
 
   return (
     <div className="page">
       <Header account={account} setAccount={setAccount} />
 
       <main>
+      <div>
+          <p>Actualizacion de memes</p>
+          <button
+            onClick={handleToggle}
+            className={`toggle-button ${isToggled ? 'on' : 'off'}`}
+          >
+            {isToggled ? 'Enc' : 'Apag'}
+          </button>
+        </div>
 
         <div className="listings">
           <h1>Lista maestra de monedas</h1>

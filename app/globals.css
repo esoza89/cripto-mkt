@@ -36,6 +36,10 @@ h2 {
 .page {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
+  transform: scale(0.8);
+  transform-origin: top left;
+  width: 125%;
+  height: 125%;
 }
 
 /* HEADER STYLES */
@@ -249,8 +253,10 @@ main .listings h1 {
 
 /* TRADE TOKENS */
 .trade {
-  width: 98vw;
-  height: 100vh;
+  transform: scale(0.8);
+  transform-origin: top left;
+  width: 90vw;
+  height: 90vh;
   background-color: rgba(0, 0, 0, 0.9);
 
   position: fixed;
@@ -301,4 +307,23 @@ main .listings h1 {
   padding: 0.5em;
   width: 100%;
   color: #808080;
+}
+
+.toggle-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.toggle-button.on {
+  background-color: #4caf50;
+  color: white;
+}
+
+.toggle-button.off {
+  background-color: #f44336;
+  color: white;
 }
