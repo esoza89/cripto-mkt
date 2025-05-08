@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react"
 import { ethers } from 'ethers'
 import { useSelector} from 'react-redux';
-import React from 'react';
 
 
 // Components
