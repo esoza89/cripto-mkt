@@ -1,6 +1,7 @@
 "use client"
 
-export function Acerca() {
+import React from 'react';
+const AcercaPage = () => {
 
   return (
     <div className="page">
@@ -55,4 +56,4 @@ export function Acerca() {
   );
 }
 
-export default Acerca;
+export default AcercaPage;
