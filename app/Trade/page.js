@@ -11,7 +11,7 @@ import { useSelector, useDispatch} from 'react-redux';
 import { addTrade } from "../store/tokensSlice"
 
 
-export function Trade() {
+const TradePage = ()=> {
   const [target, setTarget] = useState(0)
   const [limit, setLimit] = useState(0)
   const [price, setPrice] = useState(0)
@@ -301,4 +301,4 @@ export function Trade() {
   );
 }
 
-export default Trade;
+export default TradePage;
