@@ -14,7 +14,7 @@ import Token from "../components/Token"
 import Factory from "../abis/Factory.json"
 import config from "../config.json"
 
-export function ListaPage() {
+const ListaPage = ()=> {
 
   const [provider, setProvider] = useState(null)
   const [account, setAccount] = useState(null)
