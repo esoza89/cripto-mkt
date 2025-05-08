@@ -14,7 +14,7 @@ import Token from "../components/Token"
 import Factory from "../abis/Factory.json"
 import config from "../config.json"
 
-export function ListaMaestra() {
+export function ListaPage() {
 
   const [provider, setProvider] = useState(null)
   const [account, setAccount] = useState(null)
@@ -117,4 +117,4 @@ export function ListaMaestra() {
   );
 }
 
-export default ListaMaestra;
+export default ListaPage;
