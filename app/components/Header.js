@@ -2,6 +2,10 @@ import { ethers } from "ethers"
 
 function Header({ account, setAccount }) {
 
+  const openAcerca = () => {
+    window.open('/Acerca', '_blank', 'noopener,noreferrer');
+  };
+
   async function connectHandler() {
     if (typeof window.ethereum !== 'undefined') {
       const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
@@ -19,6 +23,11 @@ function Header({ account, setAccount }) {
   return (
     <header>
       <p className="brand">meme dorado</p>
+      <div className="create">
+          <button onClick={openAcerca} className="btn--fancy">
+            [ Acerca de ]
+          </button>
+        </div>
 
       { account ? (
         <button className="btn--fancy">[ {account.slice(0, 6) + '...' + account.slice(38, 42)} ]</button>

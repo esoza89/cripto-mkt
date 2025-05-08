@@ -97,7 +97,7 @@ export default function Home() {
     if (isToggled === true) {
       const interval = setInterval(() => {
         loadBlockchainData()
-      }, 5000);
+      }, 3000);
       return () => clearInterval(interval);
     }
   }, [isToggled])
